@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Books.Controllers
 {
-    [Route("api")]
+    [Route("api/[controller]")]
     public class PublishersController : Controller
     {
         private readonly IBooksRepository _booksData;
@@ -17,7 +17,7 @@ namespace Books.Controllers
         
         // Task 1: GET-routes
 
-        [Route("publishers")]
+        [Route("")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -36,7 +36,7 @@ namespace Books.Controllers
             return Ok(publisherResponse);
         }
 
-        [Route("publishers/{publisherId}")]
+        [Route("{publisherId}")]
         [HttpGet]
         public IActionResult GetBookById(int publisherId)
         {
@@ -54,7 +54,7 @@ namespace Books.Controllers
             return Ok(publisherViewModel);
         }
 
-        [Route("publishers/{bookId}/publisher")]
+        [Route("{bookId}/publisher")]
         [HttpGet]
         public IActionResult GetPublisherByBookId(int bookId)
         {
@@ -75,7 +75,7 @@ namespace Books.Controllers
 
         // Task 2: POST-routes
 
-        [Route("publishers")]
+        [Route("")]
         [HttpPost]
         public IActionResult Add([FromBody] CreatePublisherViewModel createPublisherViewModel)
         {
@@ -96,7 +96,7 @@ namespace Books.Controllers
 
         // Task 3: UPDATE-routes
 
-        [Route("publishers/{id}")]
+        [Route("{id}")]
         [HttpPut]
         public IActionResult Update(int id, [FromBody] UpdatePublisherViewModel updatePublisherViewModel)
         {
@@ -117,7 +117,7 @@ namespace Books.Controllers
             return NoContent();
         }
 
-        [Route("publishers/assign-book")]
+        [Route("assign-book")]
         [HttpPut]
         public IActionResult AssignBookToPublisher([FromBody] AssignBookToPublisherViewModel assignBookToPublisherViewModel)
         {
@@ -136,5 +136,22 @@ namespace Books.Controllers
 
             return NoContent();
         }
+
+        // Task 3: DELETE-routes
+
+        [Route("")]
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var foundPublisher = _booksData.GetPublisherById(id);
+
+            if (foundPublisher is null) {
+                return NotFound();
+            }
+
+            _booksData.DeletePublisher(foundPublisher);
+            return NoContent();
+        }
+
     }
 }

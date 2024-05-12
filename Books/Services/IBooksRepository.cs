@@ -21,6 +21,9 @@ namespace Books.Services
         void UpdatePublisher(Publisher publisher);
         void AssignBookToAuthor(Book book, Author author);
         void AssignBookToPublisher(Book book, Publisher publisher);
+        void DeleteBook(Book book);
+        void DeleteAuthor(Author author);
+        void DeletePublisher(Publisher publisher);
 
 
     }

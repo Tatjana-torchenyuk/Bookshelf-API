@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Books.Controllers
 {
-    [Route("api")]
+    [Route("api/[controller]")]
     public class AuthorsController : Controller
     {
         private readonly IBooksRepository _booksData;
@@ -17,7 +17,7 @@ namespace Books.Controllers
 
         // Task 1: GET-Routes
 
-        [Route("authors")]
+        [Route("")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -37,7 +37,7 @@ namespace Books.Controllers
             return Ok(authorsResponse);
         }
 
-        [Route("authors/{authorId}")]
+        [Route("{authorId}")]
         [HttpGet]
         public IActionResult GetAuthorById(int authorId)
         {
@@ -55,7 +55,7 @@ namespace Books.Controllers
             return Ok(authorViewModel);
         }
 
-        [Route("authors/{authorId}/books")]
+        [Route("{authorId}/books")]
         [HttpGet]
         public IActionResult GetBooksByAuthorId(int authorId)
         {
@@ -85,7 +85,7 @@ namespace Books.Controllers
 
         // Task 2: POST-routes
 
-        [Route("authors")]
+        [Route("")]
         [HttpPost]
         public IActionResult Add([FromBody]CreateAuthorViewModel createAuthorViewModel)
         {
@@ -108,7 +108,7 @@ namespace Books.Controllers
 
         // Task 3: UPDATE-routes
 
-        [Route("authors/{id}")]
+        [Route("{id}")]
         [HttpPut]
         public IActionResult Update(int id, [FromBody]UpdateAuthorViewModel updateAuthorViewModel)
         {
@@ -130,7 +130,7 @@ namespace Books.Controllers
         }
 
 
-        [Route("authors/assign-book")]
+        [Route("assign-book")]
         [HttpPut]
         public IActionResult AssignBookToAuthor([FromBody]AssignBookToAuthorViewModel assignBookToAuthorViewModel)
         {
@@ -147,6 +147,22 @@ namespace Books.Controllers
 
             _booksData.AssignBookToAuthor(book, author);
             
+            return NoContent();
+        }
+
+        // Task 3: DELETE-routes
+
+        [Route("")]
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var foundAuthor = _booksData.GetAuthorById(id);
+            
+            if (foundAuthor is null) {
+                return NotFound();
+            }
+
+            _booksData.DeleteAuthor(foundAuthor);
             return NoContent();
         }
     }

@@ -7,7 +7,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Books.Controllers
 {
-    [Route("api")]
+    [Route("api/[controller]")]
     public class BooksController : Controller
     {
         private readonly IBooksRepository _booksData;
@@ -19,7 +19,7 @@ namespace Books.Controllers
 
         // Task 1: GET-Routes
 
-        [Route("books")]
+        [Route("")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -37,25 +37,27 @@ namespace Books.Controllers
                         Id = x.Id, 
                         Name = x.Name
                     }).ToList();
-                
+
+                var publisherViewModel = book.Publisher != null ? new PublisherViewModel()
+                {
+                    Id = book.Publisher.Id,
+                    Name = book.Publisher.Name
+                } : null;
+
                 return new BookViewModel()
                 {
                     Id = book.Id,
                     Title = book.Title,
                     ISBN = book.ISBN,
                     Authors = authorsViewModel,
-                    Publisher = new PublisherViewModel() 
-                    { 
-                        Id = book.Publisher.Id, 
-                        Name = book.Publisher.Name 
-                    }    
+                    Publisher = publisherViewModel
                 }; 
             });
 
             return Ok(booksResponse);
         }
 
-        [Route("books/{bookId}")]
+        [Route("{bookId}")]
         [HttpGet]
         public IActionResult GetBookById(int bookId)
         {
@@ -81,7 +83,7 @@ namespace Books.Controllers
             return Ok(bookViewModel);
         }
 
-        [Route("books/{bookId}/authors")]
+        [Route("{bookId}/authors")]
         [HttpGet]
         public IActionResult GetAuthorsByBookId(int bookId)
         {
@@ -102,7 +104,7 @@ namespace Books.Controllers
 
         // Task 2: POST-routes
 
-        [Route("books")]
+        [Route("")]
         [HttpPost]
         public IActionResult Add([FromBody] CreateBookViewModel createBookViewModel)
         {
@@ -133,7 +135,7 @@ namespace Books.Controllers
 
         // Task 3: UPDATE-routes
 
-        [Route("books/{id}")]
+        [Route("{id}")]
         [HttpPut]
         public IActionResult Update(int id, [FromBody] UpdateBookViewModel updateBookViewModel)
         {
@@ -156,6 +158,20 @@ namespace Books.Controllers
             return NoContent();
         }
 
+        // Task 3: DELETE-routes
 
+        [Route("")]
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var foundBook = _booksData.GetBookById(id);
+
+            if (foundBook is null) {
+                return NotFound();
+            }
+
+            _booksData.DeleteBook(foundBook);
+            return NoContent();
+        }
     }
 }

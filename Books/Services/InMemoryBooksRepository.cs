@@ -212,6 +212,54 @@ namespace Books.Services
 
         // DELETE
 
+        public void DeleteBook(Book book)
+        {
+            // find the author(s) that wrote the to-be-deleted book
+            var authors = _authors.Where(author => author.Books.Contains(book));
 
+            // set book reference to null
+            foreach (var author in authors) {
+                author.Books.Remove(book);
+            }
+
+            // find the publisher of the to-be-deleted book
+            var publishers = _publishers.Where(publisher => publisher.Books.Contains(book));
+            
+            // set book reference to null
+            foreach (var publisher in publishers) {
+                publisher.Books.Remove(book);
+            }
+            
+            // remove the author from the list of authors
+            _books.Remove(book);
+        }
+
+        public void DeleteAuthor(Author author)
+        {
+            // find all the books written by the to-be-deleted author
+            var booksWithAuthor = _books.Where(book => book.Authors.Contains(author));
+
+            // set author reference to null
+            foreach (var book in booksWithAuthor) {
+                book.Authors.Remove(author);
+            }
+
+            // remove the author from the list of authors
+            _authors.Remove(author);
+        }
+
+        public void DeletePublisher(Publisher publisher)
+        {
+            // find all the books linked to the to-be-deleted publisher
+            var booksWithPublisher = _books.Where(book => book.Publisher == publisher);
+
+            // set publisher reference to null
+            foreach (var book in booksWithPublisher) {
+                book.Publisher = null;
+            }
+
+            //remove the publisher from the list of publishers
+            _publishers.Remove(publisher);
+        }
     }
 }

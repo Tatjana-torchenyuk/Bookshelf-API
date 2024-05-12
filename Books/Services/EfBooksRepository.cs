@@ -34,6 +34,21 @@ namespace Books.Services
             throw new NotImplementedException();
         }
 
+        public void DeleteAuthor(Author author)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteBook(Book book)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeletePublisher(Publisher publisher)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Author> GetAllAuthors()
         {
             throw new NotImplementedException();
