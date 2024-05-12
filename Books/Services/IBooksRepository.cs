@@ -2,7 +2,7 @@
 
 namespace Books.Services
 {
-    public interface IBooksData
+    public interface IBooksRepository
     {
         IEnumerable<Book> GetAllBooks();
         Book GetBookById(int bookId);
@@ -13,9 +13,14 @@ namespace Books.Services
         IEnumerable<Book> GetBooksByAuthorId(int authorId);
         IEnumerable<Author> GetAuthorsByBookId(int bookId);
         Publisher GetPublisherByBookId(int bookId);
-        void Add(Book book);
-        void Add(Author author);
-        void Add(Publisher publisher);
+        void AddBook(Book book);
+        void AddAuthor(Author author);
+        void AddPublisher(Publisher publisher);
+        void UpdateBook(Book book);
+        void UpdateAuthor(Author author);
+        void UpdatePublisher(Publisher publisher);
+        void AssignBookToAuthor(Book book, Author author);
+        void AssignBookToPublisher(Book book, Publisher publisher);
 
 
     }

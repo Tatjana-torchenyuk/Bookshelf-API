@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Books.Services
 {
-    public class InMemoryData : IBooksData
+    public class InMemoryBooksRepository : IBooksRepository
     {
         private static List<Book> _books = new List<Book>();
         private static List<Author> _authors = new List<Author>();
@@ -12,7 +12,7 @@ namespace Books.Services
         private static int authorIdIncrement = 1;
         private static int publisherIdIncrement = 1;
 
-        public InMemoryData()
+        public InMemoryBooksRepository()
         {
             this.PopulateData();
         }
@@ -35,12 +35,12 @@ namespace Books.Services
             var bloomsburyPublishing = new Publisher { Id = publisherIdIncrement++, Name = "Bloomsbury Publishing", Books = new List<Book>() };
 
             // Books
-            var theNameOfTheWind = new Book { Id = bookIdIncrement++, Title = "The Name of the Wind", Isbn = "978-1473211896", Publisher = dawBooks, Authors = new List<Author>() };
-            var mistbornTheFinalEmpire = new Book { Id = bookIdIncrement++, Title = "Mistborn: The Final Empire", Isbn = "978-0765377135", Publisher = torBooks, Authors = new List<Author>() };
-            var aGameOfThrones = new Book { Id = bookIdIncrement++, Title = "A Game of Thrones", Isbn = "978-0553386790", Publisher = bantamSpectra, Authors = new List<Author>() };
-            var theHobbit = new Book { Id = bookIdIncrement++, Title = "The Hobbit", Isbn = "978-0547928227", Publisher = allenAndUnwin, Authors = new List<Author>() };
-            var harryPotterAndThePhilosophersStone = new Book { Id = bookIdIncrement++, Title = "Harry Potter and the Philosopher's Stone", Isbn = "978-0590353427", Publisher = bloomsburyPublishing, Authors = new List<Author>() };
-            var aMemoryOfLight = new Book { Id = bookIdIncrement++, Title = "A Memory of Light", Isbn = "978-0765325952", Publisher = torBooks, Authors = new List<Author>() };
+            var theNameOfTheWind = new Book { Id = bookIdIncrement++, Title = "The Name of the Wind", ISBN = "978-1473211896", Publisher = dawBooks, Authors = new List<Author>() };
+            var mistbornTheFinalEmpire = new Book { Id = bookIdIncrement++, Title = "Mistborn: The Final Empire", ISBN = "978-0765377135", Publisher = torBooks, Authors = new List<Author>() };
+            var aGameOfThrones = new Book { Id = bookIdIncrement++, Title = "A Game of Thrones", ISBN = "978-0553386790", Publisher = bantamSpectra, Authors = new List<Author>() };
+            var theHobbit = new Book { Id = bookIdIncrement++, Title = "The Hobbit", ISBN = "978-0547928227", Publisher = allenAndUnwin, Authors = new List<Author>() };
+            var harryPotterAndThePhilosophersStone = new Book { Id = bookIdIncrement++, Title = "Harry Potter and the Philosopher's Stone", ISBN = "978-0590353427", Publisher = bloomsburyPublishing, Authors = new List<Author>() };
+            var aMemoryOfLight = new Book { Id = bookIdIncrement++, Title = "A Memory of Light", ISBN = "978-0765325952", Publisher = torBooks, Authors = new List<Author>() };
 
             // Populate lists
             _books.AddRange(new List<Book> { theNameOfTheWind, mistbornTheFinalEmpire, aGameOfThrones, theHobbit, harryPotterAndThePhilosophersStone, aMemoryOfLight });
@@ -137,7 +137,9 @@ namespace Books.Services
             return null;
         }
 
-        public void Add(Book book)
+        // CREATE
+
+        public void AddBook(Book book)
         {
             if (_books.Count > 0) {
                 book.Id = _books.Max(x => x.Id) + 1;
@@ -148,7 +150,7 @@ namespace Books.Services
             _books.Add(book);
         }
 
-        public void Add(Author author)
+        public void AddAuthor(Author author)
         {
             if (_authors.Count > 0) {
                 author.Id = _authors.Max(x => x.Id) + 1;
@@ -158,7 +160,7 @@ namespace Books.Services
             _authors.Add(author);
         }
 
-        public void Add(Publisher publisher)
+        public void AddPublisher(Publisher publisher)
         {
             if (_publishers.Count > 0) {
                 publisher.Id = _publishers.Max(x => x.Id) + 1;
@@ -167,5 +169,49 @@ namespace Books.Services
             }
             _publishers.Add(publisher);
         }
+
+        // UPDATE
+
+        public void UpdateAuthor(Author author)
+        {
+            var updatedAuthor = _authors.FirstOrDefault(x => x.Id == author.Id);
+            if (updatedAuthor != null) {
+                updatedAuthor.Name = author.Name;
+            }
+        }
+
+        public void UpdateBook(Book book)
+        {
+            var updatedBook = _books.FirstOrDefault(x => x.Id ==  book.Id);
+            if (updatedBook != null) {
+                updatedBook.Title = book.Title;
+                updatedBook.ISBN = book.ISBN;
+                updatedBook.Publisher = book.Publisher;
+            }
+        }
+
+        public void UpdatePublisher(Publisher publisher)
+        {
+            var updatedPublisher = _publishers.FirstOrDefault(x => x.Id == publisher.Id);
+            if (updatedPublisher != null) {
+                updatedPublisher.Name = publisher.Name;
+            }
+        }
+
+        public void AssignBookToAuthor(Book book, Author author)
+        {
+            book.Authors.Add(author);
+            author.Books.Add(book);
+        }
+
+        public void AssignBookToPublisher(Book book, Publisher publisher)
+        {
+            book.Publisher = publisher;
+            publisher.Books.Add(book);
+        }
+
+        // DELETE
+
+
     }
 }

@@ -9,12 +9,13 @@ namespace Books.ViewModels
         public string Title { get; set; }
 
         [Required, StringLength(15)]
-        public string Isbn { get; set; }
+        public string ISBN { get; set; }
 
         [Required]
-        public List<CreateAuthorViewModel> Authors { get; set; }
+        public int AuthorId { get; set; }
 
         [Required]
-        public CreatePublisherViewModel Publisher { get; set; }
+        public int PublisherId { get; set; }
+        
     }
 }

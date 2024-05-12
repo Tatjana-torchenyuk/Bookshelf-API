@@ -8,21 +8,21 @@ namespace Books.Controllers
     [Route("api")]
     public class PublishersController : Controller
     {
-        private readonly IBooksData _booksData;
+        private readonly IBooksRepository _booksData;
 
-        public PublishersController(IBooksData booksData)
+        public PublishersController(IBooksRepository booksData)
         {
             _booksData = booksData;
         }
         
-        // Task 1: GET:routes
+        // Task 1: GET-routes
 
         [Route("publishers")]
         [HttpGet]
         public IActionResult GetAll()
         {
             var publishers = _booksData.GetAllPublishers();
-            if (publishers == null) {
+            if (publishers is null) {
                 return NotFound();
             }
 
@@ -40,8 +40,18 @@ namespace Books.Controllers
         [HttpGet]
         public IActionResult GetBookById(int publisherId)
         {
-            Publisher publisher = _booksData.GetPublisherById(publisherId);
-            return Ok(publisher);
+            var publisher = _booksData.GetPublisherById(publisherId);
+            if (publisher is null) {
+                return NotFound();
+            }
+
+            var publisherViewModel = new PublisherViewModel()
+            {
+                Id = publisher.Id,
+                Name = publisher.Name,
+            };
+
+            return Ok(publisherViewModel);
         }
 
         [Route("publishers/{bookId}/publisher")]
@@ -49,13 +59,23 @@ namespace Books.Controllers
         public IActionResult GetPublisherByBookId(int bookId)
         {
             var publisher = _booksData.GetPublisherByBookId(bookId);
-            return Ok(publisher);
+            if (publisher is null) {
+                return NotFound();
+            }
+
+            var publisherViewModel = new PublisherViewModel()
+            {
+                Id = publisher.Id,
+                Name = publisher.Name
+            };
+
+            return Ok(publisherViewModel);
 
         }
 
-        // Task 2: POST:routes
+        // Task 2: POST-routes
 
-        [Route("publishers/add")]
+        [Route("publishers")]
         [HttpPost]
         public IActionResult Add([FromBody] CreatePublisherViewModel createPublisherViewModel)
         {
@@ -63,15 +83,58 @@ namespace Books.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newPublisher = new Author()
+            var newPublisher = new Publisher()
             {
-                Name = createPublisherViewModel.Name,
-            /*    Books = createPublisherViewModel.Books,*/
-
+                Name = createPublisherViewModel.Name
             };
-            _booksData.Add(newPublisher);
-            return Ok(newPublisher);
 
+            _booksData.AddPublisher(newPublisher);
+
+            return CreatedAtAction(nameof(Add), newPublisher);
+
+        }
+
+        // Task 3: UPDATE-routes
+
+        [Route("publishers/{id}")]
+        [HttpPut]
+        public IActionResult Update(int id, [FromBody] UpdatePublisherViewModel updatePublisherViewModel)
+        {
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var foundPublisher = _booksData.GetPublisherById(id);
+
+            if (foundPublisher is null) {
+                return NotFound();
+            }
+
+            foundPublisher.Name = updatePublisherViewModel.Name;
+            _booksData.UpdatePublisher(foundPublisher);
+
+            return NoContent();
+        }
+
+        [Route("publishers/assign-book")]
+        [HttpPut]
+        public IActionResult AssignBookToPublisher([FromBody] AssignBookToPublisherViewModel assignBookToPublisherViewModel)
+        {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var book = _booksData.GetBookById(assignBookToPublisherViewModel.BookId);
+            var publisher = _booksData.GetPublisherById(assignBookToPublisherViewModel.PublisherId);
+
+            if (book is null || publisher is null) {
+                return NotFound();
+            }
+
+            _booksData.AssignBookToPublisher(book, publisher);
+
+            return NoContent();
         }
     }
 }

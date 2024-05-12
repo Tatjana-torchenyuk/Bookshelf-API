@@ -3,15 +3,16 @@ using Books.Services;
 using Books.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Books.Controllers
 {
     [Route("api")]
     public class BooksController : Controller
     {
-        private readonly IBooksData _booksData;
+        private readonly IBooksRepository _booksData;
 
-        public BooksController(IBooksData booksData)
+        public BooksController(IBooksRepository booksData)
         {
             _booksData = booksData;
         }
@@ -23,26 +24,26 @@ namespace Books.Controllers
         public IActionResult GetAll()
         {
             var books = _booksData.GetAllBooks();
-            if (books == null) {
+            if (books is null) {
                 return NotFound();
             }
 
             // Use BooksListViewModel as DTO to return only certain fields
             var booksResponse = books.Select(book => {
                 
-                var selectedAuthors = book.Authors
-                    .Select(x => new AuthorsListViewModel() 
+                var authorsViewModel = book.Authors
+                    .Select(x => new AuthorViewModel() 
                     { 
                         Id = x.Id, 
                         Name = x.Name
                     }).ToList();
                 
-                return new BooksListViewModel
+                return new BookViewModel()
                 {
                     Id = book.Id,
                     Title = book.Title,
-                    Isbn = book.Isbn,
-                    Authors = selectedAuthors,
+                    ISBN = book.ISBN,
+                    Authors = authorsViewModel,
                     Publisher = new PublisherViewModel() 
                     { 
                         Id = book.Publisher.Id, 
@@ -58,8 +59,26 @@ namespace Books.Controllers
         [HttpGet]
         public IActionResult GetBookById(int bookId)
         {
-            Book book = _booksData.GetBookById(bookId);
-            return Ok(book);
+            var book = _booksData.GetBookById(bookId);
+
+            if (book is null) {
+                return NotFound();
+            }
+
+            var bookViewModel = new BookViewModel()
+            {
+                Id = book.Id,
+                Title = book.Title,
+                ISBN = book.ISBN,
+                Authors = book.Authors.Select(x => new AuthorViewModel() { Id = x.Id, Name = x.Name}).ToList(),
+                Publisher = new PublisherViewModel
+                {
+                    Id = book.Publisher.Id,
+                    Name = book.Publisher.Name
+                }
+            };
+
+            return Ok(bookViewModel);
         }
 
         [Route("books/{bookId}/authors")]
@@ -67,12 +86,12 @@ namespace Books.Controllers
         public IActionResult GetAuthorsByBookId(int bookId)
         {
             var authors = _booksData.GetAuthorsByBookId(bookId);
-            if (authors == null) {
+            if (authors is null) {
                 return NotFound();
             }
 
             var authorsResponse = authors.Select(author =>
-                new AuthorsListViewModel()
+                new AuthorViewModel()
                 {
                     Id = author.Id,
                     Name = author.Name,
@@ -82,5 +101,61 @@ namespace Books.Controllers
         }
 
         // Task 2: POST-routes
+
+        [Route("books")]
+        [HttpPost]
+        public IActionResult Add([FromBody] CreateBookViewModel createBookViewModel)
+        {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var foundAuthor = _booksData.GetAuthorById(createBookViewModel.AuthorId);
+            var foundPublisher = _booksData.GetPublisherById(createBookViewModel.PublisherId);
+
+            var newBook = new Book()
+            {
+                Title = createBookViewModel.Title,
+                ISBN = createBookViewModel.ISBN,
+                Authors = new List<Author>() { new Author () { 
+                    Id = foundAuthor.Id, Name = foundAuthor.Name, Books = foundAuthor.Books} 
+                },
+                Publisher = new Publisher() { Id = foundPublisher.Id, Name = foundPublisher.Name, Books = foundPublisher.Books }
+            };
+
+
+            _booksData.AddBook(newBook);
+
+            var newBookCreated = new BookViewModel() { Id = newBook.Id, Title = newBook.Title };
+
+            return CreatedAtAction(nameof(Add), newBookCreated);
+        }
+
+        // Task 3: UPDATE-routes
+
+        [Route("books/{id}")]
+        [HttpPut]
+        public IActionResult Update(int id, [FromBody] UpdateBookViewModel updateBookViewModel)
+        {
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var foundBook = _booksData.GetBookById(id);
+
+            if (foundBook is null) {
+                return NotFound();
+            }
+
+            foundBook.Title = updateBookViewModel.Title;
+            foundBook.ISBN = updateBookViewModel.ISBN;
+
+            _booksData.UpdateBook(foundBook);
+
+            return NoContent();
+        }
+
+
     }
 }

@@ -7,8 +7,8 @@ namespace Books
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IBooksData, InMemoryData>();
-            
+            services.AddSingleton<IBooksRepository, InMemoryBooksRepository>();
+         /*   services.AddScoped<IBooksRepository, EfBooksRepository>();*/
             services.AddControllers();
 
             // If you don't use GET viewModels -> Configure JSON serialization to ignore reference loops

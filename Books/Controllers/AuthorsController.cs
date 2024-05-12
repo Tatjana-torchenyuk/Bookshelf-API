@@ -8,9 +8,9 @@ namespace Books.Controllers
     [Route("api")]
     public class AuthorsController : Controller
     {
-        private readonly IBooksData _booksData;
+        private readonly IBooksRepository _booksData;
 
-        public AuthorsController(IBooksData booksData)
+        public AuthorsController(IBooksRepository booksData)
         {
             _booksData = booksData;
         }
@@ -22,13 +22,13 @@ namespace Books.Controllers
         public IActionResult GetAll()
         {
             var authors = _booksData.GetAllAuthors();
-            if (authors == null) {
+            if (authors is null) {
                 return NotFound();
             }
 
             // Use AuthorsListViewModel as DTO to return only certain fields
             var authorsResponse = authors.Select(author =>
-                new AuthorsListViewModel()
+                new AuthorViewModel()
                 {
                     Id = author.Id,
                     Name = author.Name,
@@ -42,17 +42,17 @@ namespace Books.Controllers
         public IActionResult GetAuthorById(int authorId)
         {
             var author = _booksData.GetAuthorById(authorId);
-            if (author == null) {
+            if (author is null) {
                 return NotFound();
             }
 
-            var selectedAuthor = new AuthorsListViewModel()
+            var authorViewModel = new AuthorViewModel()
             {
                 Id = author.Id,
                 Name = author.Name
             };
 
-            return Ok(selectedAuthor);
+            return Ok(authorViewModel);
         }
 
         [Route("authors/{authorId}/books")]
@@ -60,7 +60,7 @@ namespace Books.Controllers
         public IActionResult GetBooksByAuthorId(int authorId)
         {
             var books = _booksData.GetBooksByAuthorId(authorId);
-            if (books == null) {
+            if (books is null) {
                 return NotFound();
             }
 
@@ -70,7 +70,7 @@ namespace Books.Controllers
                 {
                     Id = book.Id,
                     Title = book.Title,
-                    Isbn = book.Isbn,
+                    ISBN = book.ISBN,
                     Publisher = new PublisherViewModel()
                     {
                         Id = book.Publisher.Id,
@@ -96,13 +96,58 @@ namespace Books.Controllers
 
             var newAuthor = new Author()
             {
-                Name = createAuthorViewModel.Name            
+                Name = createAuthorViewModel.Name
+                
             };
 
-            _booksData.Add(newAuthor);
+            _booksData.AddAuthor(newAuthor);
 
             return CreatedAtAction(nameof(Add), newAuthor);
 
+        }
+
+        // Task 3: UPDATE-routes
+
+        [Route("authors/{id}")]
+        [HttpPut]
+        public IActionResult Update(int id, [FromBody]UpdateAuthorViewModel updateAuthorViewModel)
+        {
+            
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var foundAuthor = _booksData.GetAuthorById(id);
+
+            if (foundAuthor is null) {
+                return NotFound();
+            }
+
+            foundAuthor.Name = updateAuthorViewModel.Name;
+            _booksData.UpdateAuthor(foundAuthor);
+
+            return NoContent();
+        }
+
+
+        [Route("authors/assign-book")]
+        [HttpPut]
+        public IActionResult AssignBookToAuthor([FromBody]AssignBookToAuthorViewModel assignBookToAuthorViewModel)
+        {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var book = _booksData.GetBookById(assignBookToAuthorViewModel.BookId );
+            var author = _booksData.GetAuthorById(assignBookToAuthorViewModel.AuthorId);
+
+            if (author is null || book is null) {
+                return NotFound();
+            }
+
+            _booksData.AssignBookToAuthor(book, author);
+            
+            return NoContent();
         }
     }
 }
