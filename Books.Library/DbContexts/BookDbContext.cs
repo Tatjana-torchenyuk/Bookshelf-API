@@ -1,7 +1,7 @@
 ﻿using Lib.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Books.Entities
+namespace Lib.DbContexts
 {
     public class BookDbContext : DbContext
     {
