@@ -1,6 +1,7 @@
-﻿using Books.Entities;
+﻿
 using Books.Services;
 using Books.ViewModels;
+using Lib.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
 using static System.Reflection.Metadata.BlobBuilder;
@@ -106,7 +107,7 @@ namespace Books.Controllers
 
         [Route("")]
         [HttpPost]
-        public IActionResult Add([FromBody] CreateBookViewModel createBookViewModel)
+        public IActionResult Add([FromBody] BookCreateViewModel createBookViewModel)
         {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
@@ -137,7 +138,7 @@ namespace Books.Controllers
 
         [Route("{id}")]
         [HttpPut]
-        public IActionResult Update(int id, [FromBody] UpdateBookViewModel updateBookViewModel)
+        public IActionResult Update(int id, [FromBody] BookUpdateViewModel updateBookViewModel)
         {
 
             if (!ModelState.IsValid) {

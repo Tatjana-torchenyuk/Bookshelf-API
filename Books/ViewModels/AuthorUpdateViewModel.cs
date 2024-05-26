@@ -1,12 +1,10 @@
-﻿using Books.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Books.ViewModels
 {
-    public class CreatePublisherViewModel
+    public class AuthorUpdateViewModel
     {
         [Required, StringLength(150)]
         public string Name { get; set; }
-
     }
 }

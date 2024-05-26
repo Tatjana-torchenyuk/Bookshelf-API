@@ -1,4 +1,4 @@
-﻿using Books.Entities;
+﻿using Lib.Entities;
 
 namespace Books.Services
 {

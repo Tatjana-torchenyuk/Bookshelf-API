@@ -1,4 +1,4 @@
-﻿namespace Books.Entities
+﻿namespace Lib.Entities
 {
     public class Book
     {

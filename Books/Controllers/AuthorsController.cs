@@ -1,6 +1,6 @@
-﻿using Books.Entities;
-using Books.Services;
+﻿using Books.Services;
 using Books.ViewModels;
+using Lib.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Books.Controllers
@@ -87,7 +87,7 @@ namespace Books.Controllers
 
         [Route("")]
         [HttpPost]
-        public IActionResult Add([FromBody]CreateAuthorViewModel createAuthorViewModel)
+        public IActionResult Add([FromBody]AuthorCreateViewModel createAuthorViewModel)
         {
             if ( !ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace Books.Controllers
 
         [Route("{id}")]
         [HttpPut]
-        public IActionResult Update(int id, [FromBody]UpdateAuthorViewModel updateAuthorViewModel)
+        public IActionResult Update(int id, [FromBody]AuthorUpdateViewModel updateAuthorViewModel)
         {
             
             if (!ModelState.IsValid) {

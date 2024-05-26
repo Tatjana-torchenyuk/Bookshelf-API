@@ -2,7 +2,7 @@
 
 namespace Books.ViewModels
 {
-    public class UpdatePublisherViewModel
+    public class PublisherUpdateViewModel
     {
         [Required, StringLength(150)]
         public string Name { get; set; }
