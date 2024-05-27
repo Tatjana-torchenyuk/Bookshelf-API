@@ -107,7 +107,7 @@ namespace BooksMVC.Controllers
 
         // Task 3: UPDATE-routes
 
-        [Route("{id}")]
+        [Route("{authorId}")]
         [HttpPut]
         public IActionResult Update(int id, [FromBody] AuthorUpdateViewModel updateAuthorViewModel)
         {

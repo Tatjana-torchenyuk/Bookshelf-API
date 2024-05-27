@@ -21,7 +21,7 @@ namespace BooksMVC
             services.AddControllers();
 
             var connection = _configuration.GetConnectionString("BooksDatabase");
-            services.AddDbContext<BookDbContext>(x => x.UseMySql(
+            services.AddDbContext<BooksDbContext>(x => x.UseMySql(
                 connection, 
                 ServerVersion.AutoDetect(connection),
                 mySqlOptions => mySqlOptions.MigrationsAssembly("BooksMVC")));

@@ -6,8 +6,8 @@ namespace Lib.Services
 {
     public class EfBooksRepository : IBooksRepository
     {
-        private readonly BookDbContext _context;
-        public EfBooksRepository(BookDbContext context)
+        private readonly BooksDbContext _context;
+        public EfBooksRepository(BooksDbContext context)
         {
             _context = context;
         }
