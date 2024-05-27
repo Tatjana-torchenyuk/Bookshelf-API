@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Books.ViewModels
+namespace BooksMVC.ViewModels
 {
     public class BookCreateViewModel
     {
@@ -15,6 +15,6 @@ namespace Books.ViewModels
 
         [Required]
         public int PublisherId { get; set; }
-        
+
     }
 }

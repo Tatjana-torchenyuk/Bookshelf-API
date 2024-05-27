@@ -1,12 +1,10 @@
-﻿
-using Books.Services;
-using Books.ViewModels;
+﻿using BooksMVC.ViewModels;
 using Lib.Entities;
+using Lib.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Metrics;
-using static System.Reflection.Metadata.BlobBuilder;
 
-namespace Books.Controllers
+
+namespace BooksMVC.Controllers
 {
     [Route("api/[controller]")]
     public class BooksController : Controller
@@ -31,11 +29,11 @@ namespace Books.Controllers
 
             // Use BooksListViewModel as DTO to return only certain fields
             var booksResponse = books.Select(book => {
-                
+
                 var authorsViewModel = book.Authors
-                    .Select(x => new AuthorViewModel() 
-                    { 
-                        Id = x.Id, 
+                    .Select(x => new AuthorViewModel()
+                    {
+                        Id = x.Id,
                         Name = x.Name
                     }).ToList();
 
@@ -52,7 +50,7 @@ namespace Books.Controllers
                     ISBN = book.ISBN,
                     Authors = authorsViewModel,
                     Publisher = publisherViewModel
-                }; 
+                };
             });
 
             return Ok(booksResponse);
@@ -73,7 +71,7 @@ namespace Books.Controllers
                 Id = book.Id,
                 Title = book.Title,
                 ISBN = book.ISBN,
-                Authors = book.Authors.Select(x => new AuthorViewModel() { Id = x.Id, Name = x.Name}).ToList(),
+                Authors = book.Authors.Select(x => new AuthorViewModel() { Id = x.Id, Name = x.Name }).ToList(),
                 Publisher = new PublisherViewModel
                 {
                     Id = book.Publisher.Id,
@@ -120,8 +118,8 @@ namespace Books.Controllers
             {
                 Title = createBookViewModel.Title,
                 ISBN = createBookViewModel.ISBN,
-                Authors = new List<Author>() { new Author () { 
-                    Id = foundAuthor.Id, Name = foundAuthor.Name, Books = foundAuthor.Books} 
+                Authors = new List<Author>() { new Author () {
+                    Id = foundAuthor.Id, Name = foundAuthor.Name, Books = foundAuthor.Books}
                 },
                 Publisher = new Publisher() { Id = foundPublisher.Id, Name = foundPublisher.Name, Books = foundPublisher.Books }
             };

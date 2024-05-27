@@ -1,10 +1,9 @@
-﻿
-using Books.Services;
-using Books.ViewModels;
+﻿using BooksMVC.ViewModels;
 using Lib.Entities;
+using Lib.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Books.Controllers
+namespace BooksMVC.Controllers
 {
     [Route("api/[controller]")]
     public class PublishersController : Controller
@@ -15,7 +14,7 @@ namespace Books.Controllers
         {
             _booksData = booksData;
         }
-        
+
         // Task 1: GET-routes
 
         [Route("")]

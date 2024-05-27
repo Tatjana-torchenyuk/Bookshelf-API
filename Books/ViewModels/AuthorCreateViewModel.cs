@@ -1,7 +1,6 @@
-﻿using Books.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Books.ViewModels
+namespace BooksMVC.ViewModels
 {
     public class AuthorCreateViewModel
     {

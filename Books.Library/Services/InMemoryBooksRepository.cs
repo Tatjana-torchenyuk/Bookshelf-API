@@ -1,6 +1,6 @@
 ﻿using Lib.Entities;
 
-namespace Books.Services
+namespace Lib.Services
 {
     public class InMemoryBooksRepository : IBooksRepository
     {
@@ -13,7 +13,7 @@ namespace Books.Services
 
         public InMemoryBooksRepository()
         {
-            this.PopulateData();
+            PopulateData();
         }
 
         private void PopulateData()
@@ -45,7 +45,7 @@ namespace Books.Services
             _books.AddRange(new List<Book> { theNameOfTheWind, mistbornTheFinalEmpire, aGameOfThrones, theHobbit, harryPotterAndThePhilosophersStone, aMemoryOfLight });
             _authors.AddRange(new List<Author>() { patrickRothfuss, brandonSanderson, georgeRRMartin, jRRTolkien, jKRowling, robertJordan });
             _publishers.AddRange(new List<Publisher> { dawBooks, torBooks, bantamSpectra, allenAndUnwin, bloomsburyPublishing });
-            
+
             // Add relation Books -> Publisher
             dawBooks.Books.Add(theNameOfTheWind);
             torBooks.Books.Add(mistbornTheFinalEmpire);
@@ -181,7 +181,7 @@ namespace Books.Services
 
         public void UpdateBook(Book book)
         {
-            var updatedBook = _books.FirstOrDefault(x => x.Id ==  book.Id);
+            var updatedBook = _books.FirstOrDefault(x => x.Id == book.Id);
             if (updatedBook != null) {
                 updatedBook.Title = book.Title;
                 updatedBook.ISBN = book.ISBN;
@@ -223,12 +223,12 @@ namespace Books.Services
 
             // find the publisher of the to-be-deleted book
             var publishers = _publishers.Where(publisher => publisher.Books.Contains(book));
-            
+
             // set book reference to null
             foreach (var publisher in publishers) {
                 publisher.Books.Remove(book);
             }
-            
+
             // remove the author from the list of authors
             _books.Remove(book);
         }

@@ -1,9 +1,9 @@
-﻿using Books.Services;
-using Books.ViewModels;
+﻿using BooksMVC.ViewModels;
 using Lib.Entities;
+using Lib.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Books.Controllers
+namespace BooksMVC.Controllers
 {
     [Route("api/[controller]")]
     public class AuthorsController : Controller
@@ -87,17 +87,16 @@ namespace Books.Controllers
 
         [Route("")]
         [HttpPost]
-        public IActionResult Add([FromBody]AuthorCreateViewModel createAuthorViewModel)
+        public IActionResult Add([FromBody] AuthorCreateViewModel createAuthorViewModel)
         {
-            if ( !ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
             var newAuthor = new Author()
             {
                 Name = createAuthorViewModel.Name
-                
+
             };
 
             _booksData.AddAuthor(newAuthor);
@@ -110,9 +109,9 @@ namespace Books.Controllers
 
         [Route("{id}")]
         [HttpPut]
-        public IActionResult Update(int id, [FromBody]AuthorUpdateViewModel updateAuthorViewModel)
+        public IActionResult Update(int id, [FromBody] AuthorUpdateViewModel updateAuthorViewModel)
         {
-            
+
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
@@ -132,13 +131,13 @@ namespace Books.Controllers
 
         [Route("assign-book")]
         [HttpPut]
-        public IActionResult AssignBookToAuthor([FromBody]AssignBookToAuthorViewModel assignBookToAuthorViewModel)
+        public IActionResult AssignBookToAuthor([FromBody] AssignBookToAuthorViewModel assignBookToAuthorViewModel)
         {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            var book = _booksData.GetBookById(assignBookToAuthorViewModel.BookId );
+            var book = _booksData.GetBookById(assignBookToAuthorViewModel.BookId);
             var author = _booksData.GetAuthorById(assignBookToAuthorViewModel.AuthorId);
 
             if (author is null || book is null) {
@@ -146,7 +145,7 @@ namespace Books.Controllers
             }
 
             _booksData.AssignBookToAuthor(book, author);
-            
+
             return NoContent();
         }
 
@@ -157,7 +156,7 @@ namespace Books.Controllers
         public IActionResult Delete(int id)
         {
             var foundAuthor = _booksData.GetAuthorById(id);
-            
+
             if (foundAuthor is null) {
                 return NotFound();
             }

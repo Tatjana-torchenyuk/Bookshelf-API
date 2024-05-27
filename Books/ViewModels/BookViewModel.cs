@@ -1,6 +1,4 @@
-﻿using Books.Entities;
-
-namespace Books.ViewModels
+﻿namespace BooksMVC.ViewModels
 {
     public class BookViewModel
     {

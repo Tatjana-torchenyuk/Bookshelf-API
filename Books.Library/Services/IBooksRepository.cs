@@ -1,6 +1,6 @@
 ﻿using Lib.Entities;
 
-namespace Books.Services
+namespace Lib.Services
 {
     public interface IBooksRepository
     {

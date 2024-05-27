@@ -1,9 +1,9 @@
-﻿using Books.Services;
-using Lib.DbContexts;
+﻿using Lib.DbContexts;
+using Lib.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace Books
+
+namespace BooksMVC
 {
 
     public class Startup
@@ -16,12 +16,15 @@ namespace Books
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IBooksRepository, InMemoryBooksRepository>();
+            //services.AddSingleton<IBooksRepository, InMemoryBooksRepository>();
             services.AddScoped<IBooksRepository, EfBooksRepository>();
             services.AddControllers();
 
             var connection = _configuration.GetConnectionString("BooksDatabase");
-            services.AddDbContext<BookDbContext>(x => x.UseMySql(connection, ServerVersion.AutoDetect(connection)));
+            services.AddDbContext<BookDbContext>(x => x.UseMySql(
+                connection, 
+                ServerVersion.AutoDetect(connection),
+                mySqlOptions => mySqlOptions.MigrationsAssembly("BooksMVC")));
 
             // If you don't use GET viewModels -> Configure JSON serialization to ignore reference loops
             /*services.AddControllers().AddNewtonsoftJson(options =>

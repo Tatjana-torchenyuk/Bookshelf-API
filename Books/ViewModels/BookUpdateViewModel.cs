@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Books.ViewModels
+namespace BooksMVC.ViewModels
 {
     public class BookUpdateViewModel
     {

@@ -1,8 +1,8 @@
-﻿
-using Lib.DbContexts;
+﻿using Lib.DbContexts;
 using Lib.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace Books.Services
+namespace Lib.Services
 {
     public class EfBooksRepository : IBooksRepository
     {

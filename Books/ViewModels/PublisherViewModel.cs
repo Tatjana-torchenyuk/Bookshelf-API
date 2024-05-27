@@ -1,4 +1,4 @@
-﻿namespace Books.ViewModels
+﻿namespace BooksMVC.ViewModels
 {
     public class PublisherViewModel
     {
