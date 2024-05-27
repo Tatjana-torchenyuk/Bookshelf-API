@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BooksMVC.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     public class BooksController : Controller
     {
         private readonly IBooksRepository _booksData;
@@ -18,7 +18,7 @@ namespace BooksMVC.Controllers
 
         // Task 1: GET-Routes
 
-        [Route("")]
+        [Route("books")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -56,11 +56,11 @@ namespace BooksMVC.Controllers
             return Ok(booksResponse);
         }
 
-        [Route("{bookId}")]
+        [Route("books/{id}")]
         [HttpGet]
-        public IActionResult GetBookById(int bookId)
+        public IActionResult GetBookById(int id)
         {
-            var book = _booksData.GetBookById(bookId);
+            var book = _booksData.GetBookById(id);
 
             if (book is null) {
                 return NotFound();
@@ -82,11 +82,11 @@ namespace BooksMVC.Controllers
             return Ok(bookViewModel);
         }
 
-        [Route("{bookId}/authors")]
+        [Route("books/{id}/authors")]
         [HttpGet]
-        public IActionResult GetAuthorsByBookId(int bookId)
+        public IActionResult GetAuthorsByBookId(int id)
         {
-            var authors = _booksData.GetAuthorsByBookId(bookId);
+            var authors = _booksData.GetAuthorsByBookId(id);
             if (authors is null) {
                 return NotFound();
             }
@@ -103,7 +103,7 @@ namespace BooksMVC.Controllers
 
         // Task 2: POST-routes
 
-        [Route("")]
+        [Route("books")]
         [HttpPost]
         public IActionResult Add([FromBody] BookCreateViewModel createBookViewModel)
         {
@@ -129,12 +129,12 @@ namespace BooksMVC.Controllers
 
             var newBookCreated = new BookViewModel() { Id = newBook.Id, Title = newBook.Title };
 
-            return CreatedAtAction(nameof(Add), newBookCreated);
+            return CreatedAtAction(nameof(GetBookById), new {id = newBookCreated.Id}, newBookCreated);
         }
 
         // Task 3: UPDATE-routes
 
-        [Route("{id}")]
+        [Route("books/{id}")]
         [HttpPut]
         public IActionResult Update(int id, [FromBody] BookUpdateViewModel updateBookViewModel)
         {
@@ -159,7 +159,7 @@ namespace BooksMVC.Controllers
 
         // Task 3: DELETE-routes
 
-        [Route("")]
+        [Route("books")]
         [HttpDelete]
         public IActionResult Delete(int id)
         {

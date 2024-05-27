@@ -16,8 +16,8 @@ namespace BooksMVC
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddSingleton<IBooksRepository, InMemoryBooksRepository>();
-            services.AddScoped<IBooksRepository, EfBooksRepository>();
+            services.AddSingleton<IBooksRepository, InMemoryBooksRepository>();
+            //services.AddScoped<IBooksRepository, EfBooksRepository>();
             services.AddControllers();
 
             var connection = _configuration.GetConnectionString("BooksDatabase");

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BooksMVC.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     public class PublishersController : Controller
     {
         private readonly IBooksRepository _booksData;
@@ -17,7 +17,7 @@ namespace BooksMVC.Controllers
 
         // Task 1: GET-routes
 
-        [Route("")]
+        [Route("publishers")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -36,11 +36,11 @@ namespace BooksMVC.Controllers
             return Ok(publisherResponse);
         }
 
-        [Route("{publisherId}")]
+        [Route("publishers/{id}")]
         [HttpGet]
-        public IActionResult GetBookById(int publisherId)
+        public IActionResult GetPublisherById(int id)
         {
-            var publisher = _booksData.GetPublisherById(publisherId);
+            var publisher = _booksData.GetPublisherById(id);
             if (publisher is null) {
                 return NotFound();
             }
@@ -54,28 +54,31 @@ namespace BooksMVC.Controllers
             return Ok(publisherViewModel);
         }
 
-        [Route("{bookId}/publisher")]
+        [Route("publishers/{id}/books")]
         [HttpGet]
-        public IActionResult GetPublisherByBookId(int bookId)
+        public IActionResult GetBooksByPublisherId(int id)
         {
-            var publisher = _booksData.GetPublisherByBookId(bookId);
-            if (publisher is null) {
+            var books = _booksData.GetBooksByPublisherId(id);
+            if (books is null) {
                 return NotFound();
             }
 
-            var publisherViewModel = new PublisherViewModel()
-            {
-                Id = publisher.Id,
-                Name = publisher.Name
-            };
-
-            return Ok(publisherViewModel);
+            // Use BookViewModel as DTO to return only certain fields
+            var booksResponse = books.Select(book =>
+                new BooksByPublisherViewModel()
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    ISBN = book.ISBN,
+                    Authors = book.Authors.Select(x => new AuthorViewModel() { Id = x.Id, Name = x.Name }).ToList()
+                });
+            return Ok(booksResponse);
 
         }
 
         // Task 2: POST-routes
 
-        [Route("")]
+        [Route("publishers")]
         [HttpPost]
         public IActionResult Add([FromBody] PublisherCreateViewModel createPublisherViewModel)
         {
@@ -90,13 +93,13 @@ namespace BooksMVC.Controllers
 
             _booksData.AddPublisher(newPublisher);
 
-            return CreatedAtAction(nameof(Add), newPublisher);
+            return CreatedAtAction(nameof(GetPublisherById), new {id = newPublisher.Id }, newPublisher);
 
         }
 
         // Task 3: UPDATE-routes
 
-        [Route("{id}")]
+        [Route("publishers/{id}")]
         [HttpPut]
         public IActionResult Update(int id, [FromBody] PublisherUpdateViewModel updatePublisherViewModel)
         {
@@ -117,7 +120,7 @@ namespace BooksMVC.Controllers
             return NoContent();
         }
 
-        [Route("assign-book")]
+        [Route("publishers/assign-book")]
         [HttpPut]
         public IActionResult AssignBookToPublisher([FromBody] AssignBookToPublisherViewModel assignBookToPublisherViewModel)
         {
@@ -139,7 +142,7 @@ namespace BooksMVC.Controllers
 
         // Task 3: DELETE-routes
 
-        [Route("")]
+        [Route("publishers")]
         [HttpDelete]
         public IActionResult Delete(int id)
         {

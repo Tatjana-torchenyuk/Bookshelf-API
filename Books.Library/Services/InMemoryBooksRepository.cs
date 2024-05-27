@@ -127,13 +127,9 @@ namespace Lib.Services
 
         }
 
-        public Publisher GetPublisherByBookId(int bookId)
+        public IEnumerable<Book> GetBooksByPublisherId(int publisherId)
         {
-            var book = _books.FirstOrDefault(b => b.Id == bookId);
-            if (book != null) {
-                return book.Publisher;
-            }
-            return null;
+            return _books.Where(book => book.Publisher.Id == publisherId);
         }
 
         // CREATE

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BooksMVC.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     public class AuthorsController : Controller
     {
         private readonly IBooksRepository _booksData;
@@ -17,7 +17,7 @@ namespace BooksMVC.Controllers
 
         // Task 1: GET-Routes
 
-        [Route("")]
+        [Route("authors")]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -37,11 +37,11 @@ namespace BooksMVC.Controllers
             return Ok(authorsResponse);
         }
 
-        [Route("{authorId}")]
+        [Route("authors/{id}")]
         [HttpGet]
-        public IActionResult GetAuthorById(int authorId)
+        public IActionResult GetAuthorById(int id)
         {
-            var author = _booksData.GetAuthorById(authorId);
+            var author = _booksData.GetAuthorById(id);
             if (author is null) {
                 return NotFound();
             }
@@ -55,11 +55,11 @@ namespace BooksMVC.Controllers
             return Ok(authorViewModel);
         }
 
-        [Route("{authorId}/books")]
+        [Route("authors/{id}/books")]
         [HttpGet]
-        public IActionResult GetBooksByAuthorId(int authorId)
+        public IActionResult GetBooksByAuthorId(int id)
         {
-            var books = _booksData.GetBooksByAuthorId(authorId);
+            var books = _booksData.GetBooksByAuthorId(id);
             if (books is null) {
                 return NotFound();
             }
@@ -85,7 +85,7 @@ namespace BooksMVC.Controllers
 
         // Task 2: POST-routes
 
-        [Route("")]
+        [Route("authors")]
         [HttpPost]
         public IActionResult Add([FromBody] AuthorCreateViewModel createAuthorViewModel)
         {
@@ -101,17 +101,16 @@ namespace BooksMVC.Controllers
 
             _booksData.AddAuthor(newAuthor);
 
-            return CreatedAtAction(nameof(Add), newAuthor);
+            return CreatedAtAction(nameof(GetAuthorById), new { id = newAuthor.Id }, newAuthor);
 
         }
 
         // Task 3: UPDATE-routes
 
-        [Route("{authorId}")]
+        [Route("authors/{id}")]
         [HttpPut]
         public IActionResult Update(int id, [FromBody] AuthorUpdateViewModel updateAuthorViewModel)
         {
-
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
@@ -129,7 +128,7 @@ namespace BooksMVC.Controllers
         }
 
 
-        [Route("assign-book")]
+        [Route("authors/assign-book")]
         [HttpPut]
         public IActionResult AssignBookToAuthor([FromBody] AssignBookToAuthorViewModel assignBookToAuthorViewModel)
         {
@@ -151,7 +150,7 @@ namespace BooksMVC.Controllers
 
         // Task 3: DELETE-routes
 
-        [Route("")]
+        [Route("authors")]
         [HttpDelete]
         public IActionResult Delete(int id)
         {
