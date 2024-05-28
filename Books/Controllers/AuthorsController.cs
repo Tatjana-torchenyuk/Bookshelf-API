@@ -15,7 +15,7 @@ namespace BooksMVC.Controllers
             _booksData = booksData;
         }
 
-        // Task 1: GET-Routes
+        // GET-Routes
 
         [Route("authors")]
         [HttpGet]
@@ -26,7 +26,6 @@ namespace BooksMVC.Controllers
                 return NotFound();
             }
 
-            // Use AuthorsListViewModel as DTO to return only certain fields
             var authorsResponse = authors.Select(author =>
                 new AuthorViewModel()
                 {
@@ -83,7 +82,7 @@ namespace BooksMVC.Controllers
 
         }
 
-        // Task 2: POST-routes
+        // POST-routes
 
         [Route("authors")]
         [HttpPost]
@@ -105,7 +104,7 @@ namespace BooksMVC.Controllers
 
         }
 
-        // Task 3: UPDATE-routes
+        // UPDATE-routes
 
         [Route("authors/{id}")]
         [HttpPut]
@@ -148,7 +147,7 @@ namespace BooksMVC.Controllers
             return NoContent();
         }
 
-        // Task 3: DELETE-routes
+        // DELETE-routes
 
         [Route("authors")]
         [HttpDelete]

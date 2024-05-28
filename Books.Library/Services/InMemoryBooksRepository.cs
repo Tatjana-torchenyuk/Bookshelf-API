@@ -210,32 +210,32 @@ namespace Lib.Services
         public void DeleteBook(Book book)
         {
             // find the author(s) that wrote the to-be-deleted book
-            var authors = _authors.Where(author => author.Books.Contains(book));
+            var authors = _authors.Where(author => author.Books.Contains(book)).ToList();
 
-            // set book reference to null
+            // delete the book from each author's list
             foreach (var author in authors) {
                 author.Books.Remove(book);
             }
 
             // find the publisher of the to-be-deleted book
-            var publishers = _publishers.Where(publisher => publisher.Books.Contains(book));
-
-            // set book reference to null
-            foreach (var publisher in publishers) {
+            var publisher = _publishers.FirstOrDefault(publisher => publisher.Id == book.Publisher.Id);
+            
+            if (publisher != null) {
+                // Delete the book from the publisher's list
                 publisher.Books.Remove(book);
             }
 
-            // remove the author from the list of authors
+            // remove the book from the list of books
             _books.Remove(book);
         }
 
         public void DeleteAuthor(Author author)
         {
             // find all the books written by the to-be-deleted author
-            var booksWithAuthor = _books.Where(book => book.Authors.Contains(author));
+            var books = _books.Where(book => book.Authors.Contains(author)).ToList();
 
-            // set author reference to null
-            foreach (var book in booksWithAuthor) {
+            // delete the author from each book
+            foreach (var book in books) {
                 book.Authors.Remove(author);
             }
 
@@ -245,11 +245,11 @@ namespace Lib.Services
 
         public void DeletePublisher(Publisher publisher)
         {
-            // find all the books linked to the to-be-deleted publisher
-            var booksWithPublisher = _books.Where(book => book.Publisher == publisher);
+            // find all the books published by the to-be-deleted publisher
+            var books = _books.Where(book => book.Publisher == publisher).ToList();
 
             // set publisher reference to null
-            foreach (var book in booksWithPublisher) {
+            foreach (var book in books) {
                 book.Publisher = null;
             }
 
