@@ -26,7 +26,7 @@ namespace BooksMVC
                 ServerVersion.AutoDetect(connection),
                 mySqlOptions => mySqlOptions.MigrationsAssembly("BooksMVC")));
 
-            // If you don't use GET viewModels -> Configure JSON serialization to ignore reference loops
+            // If you don't use viewModels -> Configure JSON serialization to ignore reference loops
             /*services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);*/
 

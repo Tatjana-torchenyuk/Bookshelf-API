@@ -1,9 +1,12 @@
-﻿namespace Lib.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Lib.Entities
 {
     public class Publisher
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Book> Books { get; set; } = new List<Book>();
+        public ICollection<Book> Books { get; set; } = new List<Book>();
     }
 }
