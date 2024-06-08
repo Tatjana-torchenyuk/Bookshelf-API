@@ -71,11 +71,11 @@ namespace BooksMVC.Controllers
                 Title = book.Title,
                 ISBN = book.ISBN,
                 Authors = book.Authors.Select(x => new AuthorViewModel() { Id = x.Id, Name = x.Name }).ToList(),
-                Publisher = new PublisherViewModel
+                Publisher = book.Publisher != null ? new PublisherViewModel()
                 {
                     Id = book.Publisher.Id,
                     Name = book.Publisher.Name
-                }
+                } : null
             };
 
             return Ok(bookViewModel);
@@ -85,6 +85,11 @@ namespace BooksMVC.Controllers
         [HttpGet]
         public IActionResult GetAuthorsByBookId(int id)
         {
+            var book = _booksData.GetBookById(id);
+            if (book is null) {
+                return NotFound();
+            }
+
             var authors = _booksData.GetAuthorsByBookId(id);
             if (authors is null) {
                 return NotFound();
@@ -110,23 +115,24 @@ namespace BooksMVC.Controllers
                 return BadRequest(ModelState);
             }
 
-            var foundAuthor = _booksData.GetAuthorById(createBookViewModel.AuthorId);
             var foundPublisher = _booksData.GetPublisherById(createBookViewModel.PublisherId);
+
+            if (foundPublisher is null) {
+                return NotFound("Publisher not found");
+            }
 
             var newBook = new Book()
             {
                 Title = createBookViewModel.Title,
                 ISBN = createBookViewModel.ISBN,
-                Authors = new List<Author>() { new Author () {
-                    Id = foundAuthor.Id, Name = foundAuthor.Name, Books = foundAuthor.Books}
-                },
-                Publisher = new Publisher() { Id = foundPublisher.Id, Name = foundPublisher.Name, Books = foundPublisher.Books }
+                Authors = new List<Author>(),
+                Publisher = foundPublisher
             };
 
 
             _booksData.AddBook(newBook);
 
-            var newBookCreated = new BookViewModel() { Id = newBook.Id, Title = newBook.Title };
+            var newBookCreated = new BookViewModel() { Id = newBook.Id, Title = newBook.Title, ISBN = newBook.ISBN, Publisher = new PublisherViewModel { Id = newBook.Publisher.Id, Name = newBook.Publisher.Name} };
 
             return CreatedAtAction(nameof(GetBookById), new {id = newBookCreated.Id}, newBookCreated);
         }

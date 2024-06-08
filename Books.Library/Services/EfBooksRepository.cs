@@ -14,44 +14,40 @@ namespace Lib.Services
 
         public IEnumerable<Book> GetAllBooks()
         {
-            return _context.Books.ToList();
+            // using eager loading to include the book's Publisher & Author data
+            return _context.Books
+                   .Include(b => b.Publisher)
+                   .Include(b => b.Authors)
+                   .ToList();
         }
 
         public Book GetBookById(int bookId)
         {
-            var book = _context.Books.FirstOrDefault(x => x.Id == bookId);
-            if (book != null) {
-                return book;
-            }
-            return null;
+            return _context.Books
+                   .Include(b => b.Publisher)
+                   .Include(b => b.Authors)
+                   .FirstOrDefault(x => x.Id == bookId);
         }
 
         public IEnumerable<Author> GetAllAuthors()
         {
-            return _context.Authors;
+            return _context.Authors.ToList();
         }
 
         public Author GetAuthorById(int authorId)
         {
-            var author = _context.Authors.FirstOrDefault(x => x.Id == authorId);
-            if (author != null) {
-                return author;
-            }
-            return null;
+            return _context.Authors.FirstOrDefault(x => x.Id == authorId);
+
         }
 
         public IEnumerable<Publisher> GetAllPublishers()
         {
-            return _context.Publishers;
+            return _context.Publishers.ToList();
         }
 
         public Publisher GetPublisherById(int publisherId)
         {
-            var publisher = _context.Publishers.FirstOrDefault(x => x.Id == publisherId);
-            if (publisher != null) {
-                return publisher;
-            }
-            return null;
+            return _context.Publishers.FirstOrDefault(x => x.Id == publisherId);
         }
 
         public IEnumerable<Book> GetBooksByAuthorId(int authorId)
@@ -94,42 +90,34 @@ namespace Lib.Services
 
         public void UpdateAuthor(Author author)
         {
-            var updatedAuthor = GetAuthorById(author.Id);
-            if (updatedAuthor != null) {
-                updatedAuthor.Name = author.Name;
-            }
+            var toUpdateAuthor = GetAuthorById(author.Id);
+            toUpdateAuthor.Name = author.Name;
             _context.SaveChanges();
         }
 
         public void UpdateBook(Book book)
         {
-            var updatedBook = GetBookById(book.Id);
-            if (updatedBook != null) {
-                updatedBook.Title = book.Title;
-                updatedBook.ISBN = book.ISBN;
-                updatedBook.Publisher = book.Publisher;
-            }
+            var toUpdateBook = GetBookById(book.Id);
+            toUpdateBook.Title = book.Title;
+            toUpdateBook.ISBN = book.ISBN;
             _context.SaveChanges();
         }
 
         public void UpdatePublisher(Publisher publisher)
         {
-            var updatedPublisher = GetPublisherById(publisher.Id);
-            if (updatedPublisher != null) {
-                updatedPublisher.Name = publisher.Name;
-            }
+            var toUpdatePublisher = GetPublisherById(publisher.Id);
+            toUpdatePublisher.Name = publisher.Name;
             _context.SaveChanges();
         }
 
-        public void AssignBookToAuthor(Book book, Author author)
+        public void UpdateAuthorToBook(Book book, Author author)
         {
             book.Authors.Add(author);
             author.Books.Add(book);
-
             _context.SaveChanges();
         }
 
-        public void AssignBookToPublisher(Book book, Publisher publisher)
+        public void UpdatePublisherToBook(Book book, Publisher publisher)
         {
             book.Publisher = publisher;
             publisher.Books.Add(book);

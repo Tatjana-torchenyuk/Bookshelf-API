@@ -1,6 +1,6 @@
-﻿namespace BooksMVC.ViewModels
+﻿namespace MinimalAPI.Models
 {
-    public class AssignBookToPublisherViewModel
+    public class PublisherToBookUpdateDto
     {
         public int BookId { get; set; }
         public int PublisherId { get; set; }

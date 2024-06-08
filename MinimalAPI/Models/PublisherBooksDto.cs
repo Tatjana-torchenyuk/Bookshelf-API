@@ -1,10 +1,10 @@
-﻿namespace BooksMVC.ViewModels
+﻿namespace MinimalAPI.Models
 {
-    public class BooksByAuthorViewModel
+    public class PublisherBooksDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string ISBN { get; set; }
-        public PublisherViewModel? Publisher { get; set; }
+        public List<AuthorDto>? Authors { get; set; }
     }
 }

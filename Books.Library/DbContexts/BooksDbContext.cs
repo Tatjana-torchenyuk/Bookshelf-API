@@ -15,10 +15,14 @@ namespace Lib.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Book>()
+            _ = modelBuilder.Entity<Book>(b => b.HasOne(p => p.Publisher)
+                .WithMany(x => x.Books)
+                .HasForeignKey("PublisherId"));
+
+            _ = modelBuilder.Entity<Book>()
                 .HasMany(b => b.Authors)
                 .WithMany(a => a.Books);
-                
+
             base.OnModelCreating(modelBuilder);
         }
     }

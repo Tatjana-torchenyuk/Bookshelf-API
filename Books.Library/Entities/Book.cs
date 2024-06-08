@@ -9,7 +9,7 @@ namespace Lib.Entities
         public string Title { get; set; }
         public string ISBN { get; set; }
         public ICollection<Author> Authors { get; set; } = new List<Author>();
-        public Publisher Publisher { get; set; }
+        public Publisher? Publisher { get; set; }
 
     }
 }

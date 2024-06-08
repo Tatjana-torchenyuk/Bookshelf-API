@@ -193,13 +193,13 @@ namespace Lib.Services
             }
         }
 
-        public void AssignBookToAuthor(Book book, Author author)
+        public void UpdateAuthorToBook(Book book, Author author)
         {
             book.Authors.Add(author);
             author.Books.Add(book);
         }
 
-        public void AssignBookToPublisher(Book book, Publisher publisher)
+        public void UpdatePublisherToBook(Book book, Publisher publisher)
         {
             book.Publisher = publisher;
             publisher.Books.Add(book);

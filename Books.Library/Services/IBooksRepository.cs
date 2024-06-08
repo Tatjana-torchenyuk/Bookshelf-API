@@ -11,7 +11,7 @@ namespace Lib.Services
         IEnumerable<Author> GetAuthorsByBookId(int bookId);
         void AddBook(Book book);
         void UpdateAuthor(Author author);
-        void AssignBookToAuthor(Book book, Author author);
+        void UpdateAuthorToBook(Book book, Author author);
         void DeleteAuthor(Author author);
 
         // Book data
@@ -30,7 +30,7 @@ namespace Lib.Services
         IEnumerable<Book> GetBooksByPublisherId(int publisherId);
         void AddPublisher(Publisher publisher);
         void UpdatePublisher(Publisher publisher);
-        void AssignBookToPublisher(Book book, Publisher publisher);
+        void UpdatePublisherToBook(Book book, Publisher publisher);
         void DeletePublisher(Publisher publisher);
 
 

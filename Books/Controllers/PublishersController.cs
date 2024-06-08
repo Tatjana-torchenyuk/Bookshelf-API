@@ -57,6 +57,11 @@ namespace BooksMVC.Controllers
         [HttpGet]
         public IActionResult GetBooksByPublisherId(int id)
         {
+            var publisher = _booksData.GetPublisherById(id);
+            if (publisher is null) {
+                return NotFound();
+            }
+
             var books = _booksData.GetBooksByPublisherId(id);
             if (books is null) {
                 return NotFound();
@@ -118,9 +123,9 @@ namespace BooksMVC.Controllers
             return NoContent();
         }
 
-        [Route("publishers/assign-book")]
+        [Route("publishers/assign-to-book")]
         [HttpPut]
-        public IActionResult AssignBookToPublisher([FromBody] AssignBookToPublisherViewModel assignBookToPublisherViewModel)
+        public IActionResult AssignBookToPublisher([FromBody] PublisherToBookUpdateViewModel assignBookToPublisherViewModel)
         {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
@@ -133,7 +138,7 @@ namespace BooksMVC.Controllers
                 return NotFound();
             }
 
-            _booksData.AssignBookToPublisher(book, publisher);
+            _booksData.UpdatePublisherToBook(book, publisher);
 
             return NoContent();
         }

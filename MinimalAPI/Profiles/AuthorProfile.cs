@@ -9,8 +9,7 @@ namespace MinimalAPI.Profiles
         public AuthorProfile()
         {
             CreateMap<Author, AuthorDto>();
-
-
+            CreateMap<AuthorForCreationDto, Author>();
         }
 
     }
